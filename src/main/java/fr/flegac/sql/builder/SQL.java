@@ -6,7 +6,6 @@ public class SQL {
     public static final String ALL_FIELDS = "*";
 
     private SQL() {
-        super();
     }
 
     public static Select select(String selectClause) {

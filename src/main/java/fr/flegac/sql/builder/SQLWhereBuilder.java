@@ -29,7 +29,6 @@ public class SQLWhereBuilder {
     private static final String AND = "AND";
 
     private SQLWhereBuilder() {
-        super();
     }
 
     public static String allTrue(String... clauses) {

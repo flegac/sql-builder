@@ -11,16 +11,13 @@ public class Where {
         this.whereClause = whereClause;
     }
 
+    public Where where(String whereClause) {
+        this.whereClause += " AND " + whereClause;
+        return this;
+    }
+
     public OrderBy orderBy(String orderByClause) {
         return new OrderBy(this, orderByClause);
-    }
-
-    public From getFrom() {
-        return from;
-    }
-
-    public String getWhereClause() {
-        return whereClause;
     }
 
     public String build() {

@@ -4,6 +4,7 @@ import static fr.flegac.sql.builder.SQL.selectAllFields;
 import static fr.flegac.sql.builder.SQLWhereBuilder.allTrue;
 import static fr.flegac.sql.builder.SQLWhereBuilder.anyTrue;
 import static fr.flegac.sql.builder.SQLWhereBuilder.in;
+import static fr.flegac.sql.builder.SQLWhereBuilder.like;
 import static fr.flegac.sql.builder.SQLWhereBuilder.not;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,19 +26,53 @@ public class SQLShould {
     }
 
     @Test
+    public void buildSQLWithOrderByWithoutWhereClause() {
+        // given
+        String expected = "SELECT * FROM dataBase WHERE 1=1 ORDER BY X, Y ASC, Z DESC";
+
+        // when
+        String query = selectAllFields().from("dataBase")
+            .orderBy("X, Y ASC, Z DESC").build();
+
+        // then
+        System.out.println(query);
+        assertThat(query).isEqualTo(expected);
+    }
+
+    @Test
+    public void buildSQLWithMultipleWhereClause() {
+        // given
+        String expected = "SELECT * FROM database WHERE clause1 AND clause2 AND (choice1 OR choice2 OR choice3)";
+
+        // when
+        String query = selectAllFields().from("database")
+            .where("clause1")
+            .where("clause2")
+            .where(anyTrue("choice1", "choice2", "choice3"))
+            .build();
+
+        // then
+        System.out.println(query);
+        assertThat(query).isEqualTo(expected);
+    }
+
+    @Test
     public void buildSQLWithWhereClause() {
         // given
-        String expected = "SELECT * FROM documentType WHERE "
-            + "(A = B"
+        String pattern1 = "%SUFFIX";
+        String pattern2 = "PREFIX%";
+        String expected = "SELECT * FROM documentType"
+            + " WHERE (A = B"
+            + " AND ((fdsfdq LIKE %SUFFIX) OR (fdsfdq LIKE PREFIX%))"
             + " AND (X < 3 OR Z = 4)"
             + " AND (Y IN ('1' , '3' , '5' , 'TOTO' , '4.5' , '3' , '43.21'))"
-            + " AND (NOT (K IN ('1' , '2' , '3'))))"
-            + " ORDER BY A";
+            + " AND (NOT (K IN ('1' , '2' , '3')))) ORDER BY A";
 
         // when
         String query = selectAllFields().from("documentType")
             .where(allTrue(
                 "A = B",
+                anyTrue(like("fdsfdq", pattern1), like("fdsfdq", pattern2)),
                 anyTrue("X < 3", "Z = 4"),
                 in("Y", 1, 3, 5, "TOTO", 4.5, 3l, 43.21f),
                 not(in("K", 1, 2, 3))))
