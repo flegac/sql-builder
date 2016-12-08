@@ -1,25 +1,25 @@
 package fr.flegac.sql.builder.grammar;
 
 public class From {
-    private Select select;
+  private final Select select;
 
-    private String fromClause;
+  private final String fromClause;
 
-    public From(Select select, String fromClause) {
-        super();
-        this.select = select;
-        this.fromClause = fromClause;
-    }
+  public From(final Select select, final String fromClause) {
+    super();
+    this.select = select;
+    this.fromClause = fromClause;
+  }
 
-    public Where where(String whereClause) {
-        return new Where(this, whereClause);
-    }
+  public String build() {
+    return new StringBuilder("SELECT ").append(select.getSelectClause()).append(" FROM ").append(fromClause).toString();
+  }
 
-    public OrderBy orderBy(String orderByClause) {
-        return where("1=1").orderBy(orderByClause);
-    }
+  public OrderBy orderBy(final String orderByClause) {
+    return where("1=1").orderBy(orderByClause);
+  }
 
-    public String build() {
-        return new StringBuilder("SELECT ").append(select.getSelectClause()).append(" FROM ").append(fromClause).toString();
-    }
+  public Where where(final String whereClause) {
+    return new Where(this, whereClause);
+  }
 }

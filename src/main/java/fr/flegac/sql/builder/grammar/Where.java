@@ -1,26 +1,28 @@
 package fr.flegac.sql.builder.grammar;
 
+import fr.flegac.sql.builder.SQLWhereBuilder;
+
 public class Where {
-    private From from;
+  private final From from;
 
-    private String whereClause;
+  private String whereClause;
 
-    public Where(From from, String whereClause) {
-        super();
-        this.from = from;
-        this.whereClause = whereClause;
-    }
+  public Where(final From from, final String whereClause) {
+    super();
+    this.from = from;
+    this.whereClause = whereClause;
+  }
 
-    public Where where(String whereClause) {
-        this.whereClause += " AND " + whereClause;
-        return this;
-    }
+  public String build() {
+    return new StringBuilder(from.build()).append(" WHERE ").append(whereClause).toString();
+  }
 
-    public OrderBy orderBy(String orderByClause) {
-        return new OrderBy(this, orderByClause);
-    }
+  public OrderBy orderBy(final String orderByClause) {
+    return new OrderBy(this, orderByClause);
+  }
 
-    public String build() {
-        return new StringBuilder(from.build()).append(" WHERE ").append(whereClause).toString();
-    }
+  public Where where(final String whereClause) {
+    this.whereClause = SQLWhereBuilder.allTrue(this.whereClause, whereClause);
+    return this;
+  }
 }
