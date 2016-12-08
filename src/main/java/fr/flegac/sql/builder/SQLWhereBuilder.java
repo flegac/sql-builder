@@ -40,7 +40,7 @@ public class SQLWhereBuilder {
     }
 
     public static String like(String leftValue, String rightValue) {
-        return operator(LIKE, leftValue, rightValue);
+        return operator(LIKE, leftValue, QUOTE + rightValue + QUOTE);
     }
 
     public static String in(String value, Object... list) {
@@ -59,9 +59,11 @@ public class SQLWhereBuilder {
     }
 
     public static String operator(String op, Object leftValue, Object rightValue) {
-        return new StringBuilder(OPEN).append(leftValue)
+        return new StringBuilder(OPEN)
+            .append(leftValue)
             .append(SPACE).append(op).append(SPACE)
-            .append(rightValue).append(CLOSE).toString();
+            .append(rightValue)
+            .append(CLOSE).toString();
     }
 
     private static String jonction(String op, String... clauses) {
@@ -69,9 +71,11 @@ public class SQLWhereBuilder {
     }
 
     private static String listOperator(String op, String value, Collection<?> list) {
-        return new StringBuilder(OPEN).append(value)
+        return new StringBuilder(OPEN)
+            .append(value)
             .append(SPACE).append(op).append(SPACE)
-            .append(listFormating(list)).append(CLOSE).toString();
+            .append(listFormating(list))
+            .append(CLOSE).toString();
     }
 
     private static String listFormating(Collection<?> list) {
